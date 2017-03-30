@@ -64,8 +64,10 @@ if not pcall(loadHabits) then
 	if io.read() ~= "y" then return end
 end
 
-local command = arg[0]
-arg[0] = nil
-commands.tryRun(command, arg)
+local argRemainder = {}
+for i = 2, #arg do
+	argRemainder[i-1] = arg[i]
+end
+assert(commands.tryRun(arg[1], argRemainder))
 saveHabits()
 

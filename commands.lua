@@ -77,10 +77,10 @@ return {
 	tryRun = function(command, args)
 		if #args > COMMANDS[command].arity then
 			return false, "Too many arguments"
-		else
+		elseif #args < COMMANDS[command].arity then
 			return false, "Insufficient arguments"
 		end
-		COMMANDS[command].run()
+		COMMANDS[command].run(unpack(args))
 		return true
 	end
 }
