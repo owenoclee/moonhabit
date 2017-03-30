@@ -3,6 +3,7 @@ Command-line habit tracker based on the "don't break the chain" method. Work in 
 
 ### Requirements
 Lua >= 5.1
+
 lua-cjson
 
 You can use LuaRocks to install lua-cjson.
