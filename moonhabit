@@ -1,69 +1,11 @@
 #!/usr/bin/env lua
 
 cjson = require "cjson"
+date = require "date"
+commands = require "commands"
 
 APP_NAME = "moonhabit"
 DATA_NAME = "data.json"
-COMMANDS = {
-	add = function(name)
-		habits[name] = habits[name] or { meta = { count = 0, streak = 0 } }
-	end,
-	rm = function(name)
-		habits[name] = nil
-	end,
-	check = function(name)
-		if not habits[name][TODAY] then
-			habits[name][TODAY] = {}
-			habits[name].meta.count = habits[name].meta.count + 1
-			if habits[name][YESTERDAY] then
-				habits[name].meta.streak = habits[name].meta.streak + 1
-			else
-				habits[name].meta.streak = 1
-			end
-		end
-	end,
-	uncheck = function(name)
-		if habits[name][TODAY] then
-			habits[name][TODAY] = nil
-			habits[name].meta.count = habits[name].meta.count - 1
-			habits[name].meta.streak = habits[name].meta.streak - 1
-		end
-	end,
-	display = function(name)
-		for k, _ in pairs(habits[name]) do
-			print(k)
-		end
-	end,
-	ls = function()
-		for k, _ in pairs(habits) do
-			print(string.format("%s: %d day streak. %d recorded events.", k,
-					habits[k].meta.streak, habits[k].meta.count))
-		end
-	end,
-}
-
--- fallback command: help
-setmetatable(COMMANDS, {
-	__index = function()
-		return function()
-			print("Usage: " .. APP_NAME .. " <command> [<args>]\n\n" ..
-					"Commands:\n" ..
-					"    add                Add a new habit\n" ..
-					"    rm                 Remove a habit\n" ..
-					"    check              Check off a habit\n" ..
-					"    uncheck            Uncheck a habit\n" ..
-					"    display            Display details about a habit\n" ..
-					"    ls                 List all habits")
-		end
-	end
-})
-
-do
-	local yesterdayDate = os.date("*t")
-	yesterdayDate.day = yesterdayDate.day - 1
-	YESTERDAY = os.date("%Y-%m-%d", os.time(yesterdayDate))
-	TODAY = os.date("%Y-%m-%d")
-end
 
 habits = {}
 
@@ -94,9 +36,9 @@ function saveHabits()
 end
 
 function getAndUpdateStreak(habit)
-	if habit[YESTERDAY] then
+	if habit[date.YESTERDAY] then
 		return habit.meta.streak
-	elseif habit[TODAY] then
+	elseif habit[date.TODAY] then
 		habit.meta.streak = 1
 		return 1
 	end
@@ -116,6 +58,8 @@ if not pcall(loadHabits) then
 	if io.read() ~= "y" then return end
 end
 
-COMMANDS[arg[1]](arg[2])
+local command = arg[0]
+arg[0] = nil
+commands.tryRun(command, arg)
 saveHabits()
 
