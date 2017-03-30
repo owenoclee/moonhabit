@@ -1,6 +1,7 @@
 #!/usr/bin/env lua
 
 cjson = require "cjson"
+require "lfs"
 date = require "date"
 commands = require "commands"
 
@@ -9,9 +10,13 @@ DATA_NAME = "data.json"
 
 habits = {}
 
-function getDataPath()
+function getDataDir()
 	return (os.getenv("XDG_CONFIG_HOME") or os.getenv("HOME") .. "/.config") .. "/" ..
-			APP_NAME .. "/" .. DATA_NAME
+			APP_NAME
+end
+
+function getDataPath()
+	return getDataDir() .. "/" .. DATA_NAME
 end
 
 function readFile(filePath)
@@ -32,6 +37,7 @@ function loadHabits()
 end
 
 function saveHabits()
+	lfs.mkdir(getDataDir())
 	writeFile(getDataPath(), cjson.encode(habits))
 end
 
