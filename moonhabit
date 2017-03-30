@@ -1,0 +1,121 @@
+#!/usr/bin/env lua
+
+cjson = require "cjson"
+
+APP_NAME = "moonhabit"
+DATA_NAME = "data.json"
+COMMANDS = {
+	add = function(name)
+		habits[name] = habits[name] or { meta = { count = 0, streak = 0 } }
+	end,
+	rm = function(name)
+		habits[name] = nil
+	end,
+	check = function(name)
+		if not habits[name][TODAY] then
+			habits[name][TODAY] = {}
+			habits[name].meta.count = habits[name].meta.count + 1
+			if habits[name][YESTERDAY] then
+				habits[name].meta.streak = habits[name].meta.streak + 1
+			else
+				habits[name].meta.streak = 1
+			end
+		end
+	end,
+	uncheck = function(name)
+		if habits[name][TODAY] then
+			habits[name][TODAY] = nil
+			habits[name].meta.count = habits[name].meta.count - 1
+			habits[name].meta.streak = habits[name].meta.streak - 1
+		end
+	end,
+	display = function(name)
+		for k, _ in pairs(habits[name]) do
+			print(k)
+		end
+	end,
+	ls = function()
+		for k, _ in pairs(habits) do
+			print(string.format("%s: %d day streak. %d recorded events.", k,
+					habits[k].meta.streak, habits[k].meta.count))
+		end
+	end,
+}
+
+-- fallback command: help
+setmetatable(COMMANDS, {
+	__index = function()
+		return function()
+			print("Usage: " .. APP_NAME .. " <command> [<args>]\n\n" ..
+					"Commands:\n" ..
+					"    add                Add a new habit\n" ..
+					"    rm                 Remove a habit\n" ..
+					"    check              Check off a habit\n" ..
+					"    uncheck            Uncheck a habit\n" ..
+					"    display            Display details about a habit\n" ..
+					"    ls                 List all habits")
+		end
+	end
+})
+
+do
+	local yesterdayDate = os.date("*t")
+	yesterdayDate.day = yesterdayDate.day - 1
+	YESTERDAY = os.date("%Y-%m-%d", os.time(yesterdayDate))
+	TODAY = os.date("%Y-%m-%d")
+end
+
+habits = {}
+
+function getDataPath()
+	return (os.getenv("XDG_CONFIG_HOME") or os.getenv("HOME") .. "/.config") .. "/" ..
+			APP_NAME .. "/" .. DATA_NAME
+end
+
+function readFile(filePath)
+	local file = assert(io.open(filePath, "rb"))
+	local data = file:read("*all")
+	file:close()
+	return data
+end
+
+function writeFile(filePath, data)
+	local file = assert(io.open(filePath, "wb"))
+	file:write(data)
+	file:close()
+end
+
+function loadHabits()
+	habits = cjson.decode(readFile(getDataPath()))
+end
+
+function saveHabits()
+	writeFile(getDataPath(), cjson.encode(habits))
+end
+
+function getAndUpdateStreak(habit)
+	if habit[YESTERDAY] then
+		return habit.meta.streak
+	elseif habit[TODAY] then
+		habit.meta.streak = 1
+		return 1
+	end
+	habit.meta.streak = 0
+	return 0
+end
+
+function updateStreaks(habits)
+	for k, _ in pairs(habits) do
+		getAndUpdateStreak(habits[k])
+	end
+end
+
+if not pcall(loadHabits) then
+	io.write("Could not load habits file, would you like to create one? (y/n) ")
+	io.flush()
+	if io.read() ~= "y" then return end
+end
+
+COMMANDS[arg[1]](arg[2])
+saveHabits()
+
