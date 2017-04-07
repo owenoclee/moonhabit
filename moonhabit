@@ -1,50 +1,15 @@
 #!/usr/bin/env lua
 
-cjson = require "cjson"
 require "lfs"
-date = require "mnhbt.date"
-commands = require "mnhbt.commands"
-
-APP_NAME = "moonhabit"
-DATA_NAME = "data.json"
-
-habits = {}
-
-function getDataDir()
-	return (os.getenv("XDG_CONFIG_HOME") or os.getenv("HOME") .. "/.config") .. "/" ..
-			APP_NAME
-end
-
-function getDataPath()
-	return getDataDir() .. "/" .. DATA_NAME
-end
-
-function readFile(filePath)
-	local file = assert(io.open(filePath, "rb"))
-	local data = file:read("*all")
-	file:close()
-	return data
-end
-
-function writeFile(filePath, data)
-	local file = assert(io.open(filePath, "wb"))
-	file:write(data)
-	file:close()
-end
-
-function loadHabits()
-	habits = cjson.decode(readFile(getDataPath()))
-end
-
-function saveHabits()
-	lfs.mkdir(getDataDir())
-	writeFile(getDataPath(), cjson.encode(habits))
-end
+local cjson = require "cjson"
+local commands = require "mnhbt.commands"
+local consts = require "mnhbt.consts"
+local data = require "mnhbt.data"
 
 function getAndUpdateStreak(habit)
-	if habit[date.YESTERDAY] then
+	if habit[consts.YESTERDAY] then
 		return habit.meta.streak
-	elseif habit[date.TODAY] then
+	elseif habit[consts.TODAY] then
 		habit.meta.streak = 1
 		return 1
 	end
@@ -58,7 +23,8 @@ function updateStreaks(habits)
 	end
 end
 
-if not pcall(loadHabits) then
+local success, habits = pcall(data.loadHabits)
+if not success then
 	io.write("Could not load habits file, would you like to create one? (y/n) ")
 	io.flush()
 	if io.read() ~= "y" then return end
@@ -68,6 +34,7 @@ local argRemainder = {}
 for i = 2, #arg do
 	argRemainder[i-1] = arg[i]
 end
-assert(commands.tryRun(arg[1], argRemainder))
-saveHabits()
+
+assert(commands.tryRun(arg[1], argRemainder, habits))
+data.saveHabits()
 
