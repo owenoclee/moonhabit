@@ -2,8 +2,8 @@
 
 cjson = require "cjson"
 require "lfs"
-date = require "date"
-commands = require "commands"
+date = require "mnhbt.date"
+commands = require "mnhbt.commands"
 
 APP_NAME = "moonhabit"
 DATA_NAME = "data.json"
