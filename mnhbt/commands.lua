@@ -1,3 +1,5 @@
+local consts = require "consts"
+
 local COMMANDS = {
 	add = {
 		arity = 1,
@@ -14,10 +16,10 @@ local COMMANDS = {
 	check = {
 		arity = 1,
 		run = function(name)
-			if not habits[name][TODAY] then
-				habits[name][TODAY] = {}
+			if not habits[name][consts.TODAY] then
+				habits[name][consts.TODAY] = {}
 				habits[name].meta.count = habits[name].meta.count + 1
-				if habits[name][YESTERDAY] then
+				if habits[name][consts.YESTERDAY] then
 					habits[name].meta.streak = habits[name].meta.streak + 1
 				else
 					habits[name].meta.streak = 1
@@ -28,8 +30,8 @@ local COMMANDS = {
 	uncheck = {
 		arity = 1,
 		run = function(name)
-			if habits[name][TODAY] then
-				habits[name][TODAY] = nil
+			if habits[name][consts.TODAY] then
+				habits[name][consts.TODAY] = nil
 				habits[name].meta.count = habits[name].meta.count - 1
 				habits[name].meta.streak = habits[name].meta.streak - 1
 			end
