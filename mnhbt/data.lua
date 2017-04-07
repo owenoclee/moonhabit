@@ -1,6 +1,6 @@
 require "lfs"
 local cjson = require "cjson"
-local consts = require "consts"
+local consts = require "mnhbt.consts"
 
 local readFile = function(filePath)
 	local file = assert(io.open(filePath, "rb"))
@@ -17,11 +17,11 @@ end
 
 return {
 	loadHabits = function()
-		return cjson.decode(readFile(getDataPath()))
+		return cjson.decode(readFile(consts.DATA_PATH))
 	end,
 	saveHabits = function(habits)
-		lfs.mkdir(getDataDir())
-		writeFile(getDataPath(), cjson.encode(habits))
+		lfs.mkdir(consts.DATA_DIR)
+		writeFile(consts.DATA_PATH, cjson.encode(habits))
 	end
 }
 
