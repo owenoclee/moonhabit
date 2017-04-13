@@ -6,9 +6,12 @@ Lua >= 5.1
 
 lua-cjson
 
-You can use LuaRocks to install lua-cjson.
+luafilesystem
+
+You can use LuaRocks to install the dependencies.
 ```shell
 luarocks install lua-cjson
+luarocks install luafilesystem
 ```
 
 ### Installation
@@ -37,9 +40,19 @@ Checking it off after going for a run.
 moonhabit check running
 ```
 
-List habits and see their status.
+List habits.
 ```shell
 moonhabit ls
+```
+
+Get status of a habit.
+```shell
+moonhabit status running
+```
+
+Get status of all habits.
+```shell
+moonhabit status
 ```
 
 Deleting a habit.
