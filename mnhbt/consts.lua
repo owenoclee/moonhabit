@@ -1,11 +1,6 @@
-local yesterdayDate = os.date("*t")
-yesterdayDate.day = yesterdayDate.day - 1
-
 local consts = {
 	APP_NAME = "moonhabit",
-	DATA_NAME = "data.json",
-	YESTERDAY = os.date("%Y-%m-%d", os.time(yesterdayDate)),
-	TODAY = os.date("%Y-%m-%d")
+	DATA_NAME = "data.json"
 }
 
 consts.DATA_DIR = (os.getenv("XDG_CONFIG_HOME") or os.getenv("HOME") ..
