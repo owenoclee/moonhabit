@@ -35,8 +35,8 @@ local COMMANDS = {
 	display = {
 		arity = 1,
 		run = function(habits, name)
-			for k, _ in pairs(habits[name]) do
-				print(k)
+			for _, v in pairs(habits[name]) do
+				print(v)
 			end
 		end
 	},
