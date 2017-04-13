@@ -23,11 +23,12 @@ function updateStreaks(habits)
 	end
 end
 
-local success, habits = pcall(data.loadHabits)
-if not success then
+local habits = data.loadHabits()
+if not habits then
 	io.write("Could not load habits file, would you like to create one? (y/n) ")
 	io.flush()
 	if io.read() ~= "y" then return end
+	habits = {}
 end
 
 local argRemainder = {}
@@ -36,5 +37,5 @@ for i = 2, #arg do
 end
 
 assert(commands.tryRun(arg[1], argRemainder, habits))
-data.saveHabits()
+data.saveHabits(habits)
 

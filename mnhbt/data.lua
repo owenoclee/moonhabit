@@ -3,21 +3,25 @@ local cjson = require "cjson"
 local consts = require "mnhbt.consts"
 
 local readFile = function(filePath)
-	local file = assert(io.open(filePath, "rb"))
+	local file = io.open(filePath, "rb")
+	if not file then return false end
 	local data = file:read("*all")
 	file:close()
 	return data
 end
 
 local writeFile = function(filePath, data)
-	local file = assert(io.open(filePath, "wb"))
+	local file = io.open(filePath, "wb")
+	if not file then return false end
 	file:write(data)
 	file:close()
 end
 
 return {
 	loadHabits = function()
-		return cjson.decode(readFile(consts.DATA_PATH))
+		habitsStr = readFile(consts.DATA_PATH)
+		if not habitsStr then return false end
+		return cjson.decode(habitsStr)
 	end,
 	saveHabits = function(habits)
 		lfs.mkdir(consts.DATA_DIR)
