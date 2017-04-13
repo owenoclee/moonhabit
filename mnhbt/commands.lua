@@ -1,5 +1,6 @@
 local date = require "mnhbt.date"
 local meta = require "mnhbt.meta"
+local consts = require "mnhbt.consts"
 
 local COMMANDS = {
 	add = {
@@ -56,7 +57,7 @@ setmetatable(COMMANDS, {
 		return {
 			arity = 0,
 			run = function()
-				print("Usage: " .. APP_NAME .. " <command> [<args>]\n\n" ..
+				print("Usage: " .. consts.APP_NAME .. " <command> [<args>]\n\n" ..
 						"Commands:\n" ..
 						"    add                Add a new habit\n" ..
 						"    rm                 Remove a habit\n" ..
