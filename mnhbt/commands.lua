@@ -32,7 +32,7 @@ local COMMANDS = {
 			end
 		end
 	},
-	display = {
+	history = {
 		arity = 1,
 		run = function(habits, name)
 			for _, v in pairs(habits[name]) do
