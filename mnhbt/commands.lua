@@ -76,8 +76,9 @@ setmetatable(COMMANDS, {
 						"    rm                 Remove a habit\n" ..
 						"    check              Check off a habit\n" ..
 						"    uncheck            Uncheck a habit\n" ..
-						"    display            Display details about a habit\n" ..
-						"    ls                 List all habits")
+						"    history            See history of a habit\n" ..
+						"    ls                 List all habits\n" ..
+						"    status             Check status of habits")
 			end
 		}
 	end
