@@ -1,11 +1,11 @@
-local consts = require "mnhbt.consts"
-local habits = {}
+local date = require "mnhbt.date"
+local meta = require "mnhbt.meta"
 
 local COMMANDS = {
 	add = {
 		arity = 1,
 		run = function(habits, name)
-			habits[name] = habits[name] or { meta = { count = 0, streak = 0 } }
+			habits[name] = habits[name] or {}
 		end
 	},
 	rm = {
@@ -17,24 +17,17 @@ local COMMANDS = {
 	check = {
 		arity = 1,
 		run = function(habits, name)
-			if not habits[name][consts.TODAY] then
-				habits[name][consts.TODAY] = {}
-				habits[name].meta.count = habits[name].meta.count + 1
-				if habits[name][consts.YESTERDAY] then
-					habits[name].meta.streak = habits[name].meta.streak + 1
-				else
-					habits[name].meta.streak = 1
-				end
+			if not meta.indexOf(habits[name], date.today()) then
+				table.insert(habits[name], date.today())
 			end
 		end
 	},
 	uncheck = {
 		arity = 1,
 		run = function(habits, name)
-			if habits[name][consts.TODAY] then
-				habits[name][consts.TODAY] = nil
-				habits[name].meta.count = habits[name].meta.count - 1
-				habits[name].meta.streak = habits[name].meta.streak - 1
+			idx = meta.indexOf(habits[name], date.today())
+			if idx then
+				table.remove(habits[name], idx)
 			end
 		end
 	},
@@ -51,7 +44,7 @@ local COMMANDS = {
 		run = function(habits)
 			for k, _ in pairs(habits) do
 				print(string.format("%s: %d day streak. %d recorded events.", k,
-						habits[k].meta.streak, habits[k].meta.count))
+						meta.getStreak(habits[k]), #habits[k]))
 			end
 		end
 	}
