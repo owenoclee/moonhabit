@@ -3,25 +3,7 @@
 require "lfs"
 local cjson = require "cjson"
 local commands = require "mnhbt.commands"
-local consts = require "mnhbt.consts"
 local data = require "mnhbt.data"
-
-function getAndUpdateStreak(habit)
-	if habit[consts.YESTERDAY] then
-		return habit.meta.streak
-	elseif habit[consts.TODAY] then
-		habit.meta.streak = 1
-		return 1
-	end
-	habit.meta.streak = 0
-	return 0
-end
-
-function updateStreaks(habits)
-	for k, _ in pairs(habits) do
-		getAndUpdateStreak(habits[k])
-	end
-end
 
 local habits = data.loadHabits()
 if not habits then
