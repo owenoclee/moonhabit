@@ -1,7 +1,5 @@
 #!/usr/bin/env lua
 
-require "lfs"
-local cjson = require "cjson"
 local commands = require "mnhbt.commands"
 local data = require "mnhbt.data"
 
