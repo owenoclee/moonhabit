@@ -57,7 +57,12 @@ local COMMANDS = {
 				subHabits = { [name] = habits[name] }
 			end
 			for k, _ in pairs(subHabits) do
-				print(string.format("%s: %d day streak. %d recorded events.", k,
+				local cross = "x"
+				if not meta.indexOf(subHabits[k], date.today()) then
+					cross = " "
+				end
+				print(string.format("[%s] %s: %d day streak." ..
+						" %d recorded events.", cross, k,
 						meta.getStreak(subHabits[k]), #subHabits[k]))
 			end
 		end
