@@ -1,6 +1,6 @@
-local date = require "mnhbt.date"
-local meta = require "mnhbt.meta"
-local consts = require "mnhbt.consts"
+local date = require "date"
+local meta = require "meta"
+local consts = require "consts"
 
 local COMMANDS = {
 	add = {

@@ -1,4 +1,4 @@
-local date = require "mnhbt.date"
+local date = require "date"
 
 local meta = {}
 

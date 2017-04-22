@@ -1,6 +1,6 @@
 require "lfs"
 local cjson = require "cjson"
-local consts = require "mnhbt.consts"
+local consts = require "consts"
 
 local readFile = function(filePath)
 	local file = io.open(filePath, "rb")
