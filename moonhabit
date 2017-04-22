@@ -1,6 +1,12 @@
 #!/bin/bash
 
-DIR="$(dirname $0)/mnhbt"
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+	DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+	SOURCE="$(readlink "$SOURCE")"
+	[[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )/mnhbt"
 export LUA_PATH="$LUA_PATH;$DIR/?.lua"
 lua $DIR/main.lua
 
